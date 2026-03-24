@@ -15,7 +15,7 @@ export function StorageWarning() {
   return (
     <div
       role="alert"
-      className="bg-amber-900/90 text-amber-100 px-6 py-3 text-sm text-center border-b border-amber-700"
+      className="bg-crimson/90 text-parchment-light px-6 py-3 text-sm text-center border-b-2 border-frame-dark font-garamond"
     >
       localStorage is not available. Notes will not be saved. If you're in
       private browsing mode, try using a normal window.

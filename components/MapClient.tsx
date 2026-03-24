@@ -136,7 +136,7 @@ function ResetZoomControl({
           onResetZoom?.();
         }}
         aria-label="Reset zoom"
-        className="w-12 h-12 rounded-full bg-slate-800/90 hover:bg-slate-700 border border-slate-600 text-slate-100 flex items-center justify-center shadow-lg transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-900"
+        className="font-sharn-ui w-12 h-12 rounded-full bg-parchment-light/95 hover:bg-crimson hover:text-white border-2 border-frame text-brown-body flex items-center justify-center shadow-parchment transition-colors focus:outline-none focus:ring-2 focus:ring-crimson focus:ring-offset-2 focus:ring-offset-parchment"
       >
         <svg
           className="w-6 h-6"
@@ -266,8 +266,8 @@ export function MapClient({ activeLayer, targetDistrict = null, onMapClick, onRe
 
   if (!bounds) {
     return (
-      <div className="h-full w-full flex items-center justify-center bg-slate-800">
-        <p className="text-slate-400">Loading map...</p>
+      <div className="h-full w-full flex items-center justify-center bg-parchment">
+        <p className="text-brown-muted italic font-garamond">Loading map...</p>
       </div>
     );
   }
@@ -300,11 +300,11 @@ export function MapClient({ activeLayer, targetDistrict = null, onMapClick, onRe
             <Marker key={note.id} position={[note.lat, note.lng]}>
               <Popup>
                 <div className="min-w-[180px] p-1">
-                  <h3 className="font-semibold text-slate-900 mb-1">
+                  <h3 className="font-cinzel font-semibold text-brown-heading mb-1">
                     {note.title}
                   </h3>
                   {note.body ? (
-                    <p className="text-sm text-slate-700 whitespace-pre-wrap mb-3">
+                    <p className="text-sm text-brown-body whitespace-pre-wrap mb-3">
                       {note.body}
                     </p>
                   ) : null}
@@ -312,14 +312,14 @@ export function MapClient({ activeLayer, targetDistrict = null, onMapClick, onRe
                     <button
                       type="button"
                       onClick={() => handleNoteEdit(note)}
-                      className="text-sm px-2 py-1 rounded bg-slate-600 text-white hover:bg-slate-500"
+                      className="text-sm px-2 py-1 rounded-sm bg-brown-body text-parchment-light hover:bg-frame-dark"
                     >
                       Edit
                     </button>
                     <button
                       type="button"
                       onClick={() => handleNoteDeleteClick(note)}
-                      className="text-sm px-2 py-1 rounded bg-red-600 text-white hover:bg-red-500"
+                      className="text-sm px-2 py-1 rounded-sm bg-red-600 text-white hover:bg-red-700"
                     >
                       Delete
                     </button>

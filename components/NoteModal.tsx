@@ -120,27 +120,27 @@ export function NoteModal({
       aria-modal="true"
       aria-labelledby="note-modal-title"
       aria-describedby="note-modal-description"
-      className="fixed inset-0 z-[1000] flex items-center justify-center bg-black/60 p-4"
+      className="fixed inset-0 z-[1000] flex items-center justify-center bg-black/50 p-4"
       onClick={(e) => e.target === e.currentTarget && handleClose()}
     >
       <div
-        className="bg-slate-800 rounded-xl shadow-2xl max-w-md w-full p-6 border border-slate-600 ring-2 ring-slate-500/50"
+        className="bg-parchment-light rounded-sm shadow-2xl max-w-md w-full p-6 parchment-frame"
         onClick={(e) => e.stopPropagation()}
       >
         <div
           className={`mb-4 pl-4 border-l-4 ${
-            isEditing ? "border-amber-500" : "border-emerald-500"
+            isEditing ? "border-crimson" : "border-frame-light"
           }`}
         >
           <h2
             id="note-modal-title"
-            className="text-xl font-semibold text-slate-100"
+            className="font-cinzel text-xl font-semibold text-brown-heading"
           >
             {isEditing ? "Edit Note" : "New Note"}
           </h2>
           <p
             id="note-modal-description"
-            className="text-slate-400 text-sm mt-0.5"
+            className="text-brown-muted text-sm mt-0.5 italic"
           >
             {isEditing
               ? "Update the note title and body."
@@ -153,7 +153,7 @@ export function NoteModal({
             <div>
               <label
                 htmlFor="note-title"
-                className="block text-sm font-medium text-slate-300 mb-1"
+                className="block text-sm font-medium text-brown-heading mb-1"
               >
                 Title
               </label>
@@ -165,14 +165,14 @@ export function NoteModal({
                 onChange={(e) => setTitle(e.target.value)}
                 maxLength={TITLE_MAX_LENGTH + 50}
                 placeholder="Short label"
-                className="w-full px-3 py-2 rounded-lg bg-slate-700 border border-slate-600 text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:border-transparent"
+                className="w-full px-3 py-2 rounded-sm bg-parchment border-2 border-frame text-brown-body placeholder-brown-muted focus:outline-none focus:ring-2 focus:ring-crimson focus:border-transparent"
                 autoComplete="off"
                 aria-required="true"
                 aria-invalid={!!error}
                 aria-describedby={error ? "note-title-error" : undefined}
               />
               {error && (
-                <p id="note-title-error" className="mt-1 text-sm text-red-400">
+                <p id="note-title-error" className="mt-1 text-sm text-red-700">
                   {error}
                 </p>
               )}
@@ -181,7 +181,7 @@ export function NoteModal({
             <div>
               <label
                 htmlFor="note-body"
-                className="block text-sm font-medium text-slate-300 mb-1"
+                className="block text-sm font-medium text-brown-heading mb-1"
               >
                 Body
               </label>
@@ -191,10 +191,10 @@ export function NoteModal({
                 onChange={(e) => setBody(e.target.value)}
                 rows={4}
                 placeholder="Free-text content"
-                className="w-full px-3 py-2 rounded-lg bg-slate-700 border border-slate-600 text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:border-transparent resize-y"
+                className="w-full px-3 py-2 rounded-sm bg-parchment border-2 border-frame text-brown-body placeholder-brown-muted focus:outline-none focus:ring-2 focus:ring-crimson focus:border-transparent resize-y"
                 aria-describedby="note-body-hint"
               />
-              <p id="note-body-hint" className="mt-1 text-xs text-slate-500">
+              <p id="note-body-hint" className="mt-1 text-xs text-brown-muted italic">
                 Optional
               </p>
             </div>
@@ -204,13 +204,13 @@ export function NoteModal({
             <button
               type="button"
               onClick={handleClose}
-              className="px-4 py-2 rounded-lg bg-slate-700 hover:bg-slate-600 text-slate-100 font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-800"
+              className="px-4 py-2 rounded-sm bg-parchment-dark hover:bg-frame/20 border-2 border-frame text-brown-body font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-crimson focus:ring-offset-2 focus:ring-offset-parchment-light"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-4 py-2 rounded-lg bg-slate-600 hover:bg-slate-500 text-white font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-800"
+              className="px-4 py-2 rounded-sm bg-crimson hover:bg-crimson-dark text-white font-medium font-cinzel transition-colors focus:outline-none focus:ring-2 focus:ring-crimson focus:ring-offset-2 focus:ring-offset-parchment-light"
             >
               {isEditing ? "Save" : "Add Note"}
             </button>
