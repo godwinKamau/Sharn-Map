@@ -46,9 +46,9 @@ export default function HomePage() {
   return (
     <main className="h-screen flex flex-col">
       <StorageWarning />
-      <header className="relative z-[1100] flex-shrink-0 border-b border-slate-700 bg-slate-800/80 px-6 py-4">
+      <header className="relative z-[1100] flex-shrink-0 border-b-2 border-frame bg-parchment-light/95 px-6 py-4 shadow-parchment">
         <div className="flex items-center justify-between gap-4 mb-2">
-          <h1 className="text-xl font-semibold tracking-tight text-slate-100">
+          <h1 className="font-cinzel text-xl font-semibold tracking-wide text-brown-heading uppercase">
             Sharn Map
           </h1>
           <DistrictSearch onSelect={handleDistrictSelect} />
@@ -70,7 +70,7 @@ export default function HomePage() {
           type="button"
           onClick={goPrev}
           aria-label="Previous map layer"
-          className="absolute left-4 top-1/2 -translate-y-1/2 z-10 w-12 h-12 rounded-full bg-slate-800/90 hover:bg-slate-700 border border-slate-600 text-slate-100 flex items-center justify-center shadow-lg transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-900"
+          className="font-sharn-ui absolute left-4 top-1/2 -translate-y-1/2 z-10 w-12 h-12 rounded-full bg-parchment-light/95 hover:bg-crimson hover:text-white border-2 border-frame text-brown-body flex items-center justify-center shadow-parchment transition-colors focus:outline-none focus:ring-2 focus:ring-crimson focus:ring-offset-2 focus:ring-offset-parchment"
         >
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -80,7 +80,7 @@ export default function HomePage() {
           type="button"
           onClick={goNext}
           aria-label="Next map layer"
-          className="absolute right-4 top-1/2 -translate-y-1/2 z-10 w-12 h-12 rounded-full bg-slate-800/90 hover:bg-slate-700 border border-slate-600 text-slate-100 flex items-center justify-center shadow-lg transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-900"
+          className="font-sharn-ui absolute right-4 top-1/2 -translate-y-1/2 z-10 w-12 h-12 rounded-full bg-parchment-light/95 hover:bg-crimson hover:text-white border-2 border-frame text-brown-body flex items-center justify-center shadow-parchment transition-colors focus:outline-none focus:ring-2 focus:ring-crimson focus:ring-offset-2 focus:ring-offset-parchment"
         >
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />

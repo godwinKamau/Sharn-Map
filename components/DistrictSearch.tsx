@@ -110,23 +110,23 @@ export function DistrictSearch({ onSelect }: DistrictSearchProps) {
         aria-controls="district-search-list"
         aria-activedescendant={flatList[highlightedIndex] ? `district-${flatList[highlightedIndex]!.id}` : undefined}
         id="district-search-input"
-        className="w-full rounded-lg border border-slate-600 bg-slate-700/80 px-3 py-2 text-sm text-slate-100 placeholder-slate-400 focus:border-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2 focus:ring-offset-slate-900"
+        className="w-full rounded-lg border-2 border-frame bg-parchment-light px-3 py-2 text-sm text-brown-body placeholder-brown-muted focus:border-frame-dark focus:outline-none focus:ring-2 focus:ring-crimson focus:ring-offset-2 focus:ring-offset-parchment"
       />
       {isOpen && (
         <ul
           id="district-search-list"
           role="listbox"
           aria-labelledby="district-search-input"
-          className="absolute top-full left-0 right-0 z-20 mt-1 max-h-64 overflow-y-auto rounded-lg border border-slate-600 bg-slate-800 shadow-lg"
+          className="absolute top-full left-0 right-0 z-20 mt-1 max-h-64 overflow-y-auto rounded-lg border-2 border-frame bg-parchment-light shadow-parchment"
         >
           {grouped.length === 0 ? (
-            <li className="px-3 py-4 text-center text-sm text-slate-400" role="option">
+            <li className="px-3 py-4 text-center text-sm text-brown-muted" role="option">
               No districts found
             </li>
           ) : (
             grouped.map((group) => (
-              <li key={group.layerId} className="border-b border-slate-700 last:border-b-0">
-                <div className="px-3 py-1.5 text-xs font-medium uppercase tracking-wider text-slate-400">
+              <li key={group.layerId} className="border-b border-frame last:border-b-0">
+                <div className="px-3 py-1.5 text-xs font-medium uppercase tracking-wider text-brown-muted font-cinzel">
                   {group.layerName}
                 </div>
                 {group.districts.map((district) => {
@@ -142,7 +142,9 @@ export function DistrictSearch({ onSelect }: DistrictSearchProps) {
                       onClick={() => handleSelect(district)}
                       onMouseEnter={() => setHighlightedIndex(idx)}
                       className={`flex w-full items-center gap-2 px-3 py-2 text-left text-sm transition-colors ${
-                        isHighlighted ? "bg-slate-600 text-white" : "text-slate-200 hover:bg-slate-700/80"
+                        isHighlighted
+                          ? "bg-parchment-dark/70 text-brown-heading"
+                          : "text-brown-body hover:bg-parchment-dark/40"
                       }`}
                     >
                       <span

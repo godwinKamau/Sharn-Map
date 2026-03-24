@@ -31,14 +31,23 @@ export function LayerTabs({
             type="button"
             onClick={() => onLayerChange(layer.id)}
             className={`
-              rounded-lg px-4 py-2 text-sm font-medium transition-colors
-              focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-800
-              ${isActive ? "ring-2 ring-white/30" : "hover:bg-slate-700/60"}
+              rounded-lg px-4 py-2 text-sm font-medium transition-colors border
+              focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-parchment focus:ring-crimson
+              ${
+                isActive
+                  ? "border-crimson-dark text-white ring-2 ring-crimson/40"
+                  : "border-frame bg-transparent text-brown-muted hover:bg-parchment-dark/40 hover:text-brown-body"
+              }
             `}
-            style={{
-              backgroundColor: isActive ? layer.color : "transparent",
-              color: isActive ? "white" : "rgb(203 213 225)",
-            }}
+            style={
+              isActive
+                ? {
+                    backgroundColor: "#7B1D1D",
+                    borderLeftWidth: "4px",
+                    borderLeftColor: layer.color,
+                  }
+                : undefined
+            }
           >
             {layer.name}
           </button>

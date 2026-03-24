@@ -47,8 +47,8 @@ export function ConfirmDialog({
 
   const confirmClass =
     confirmVariant === "destructive"
-      ? "bg-red-600 hover:bg-red-700 text-white"
-      : "bg-slate-600 hover:bg-slate-500 text-white";
+      ? "bg-red-700 hover:bg-red-800 text-white"
+      : "bg-crimson hover:bg-crimson-dark text-white";
 
   return (
     <div
@@ -56,20 +56,20 @@ export function ConfirmDialog({
       aria-modal="true"
       aria-labelledby="confirm-dialog-title"
       aria-describedby="confirm-dialog-description"
-      className="fixed inset-0 z-[1000] flex items-center justify-center bg-black/60 p-4"
+      className="fixed inset-0 z-[1000] flex items-center justify-center bg-black/50 p-4"
       onClick={(e) => e.target === e.currentTarget && onCancel()}
     >
       <div
-        className="bg-slate-800 rounded-lg shadow-xl max-w-md w-full p-6 border border-slate-600"
+        className="bg-parchment-light rounded-sm shadow-xl max-w-md w-full p-6 parchment-frame"
         onClick={(e) => e.stopPropagation()}
       >
         <h2
           id="confirm-dialog-title"
-          className="text-lg font-semibold text-slate-100 mb-2"
+          className="font-cinzel text-lg font-semibold text-brown-heading mb-2"
         >
           {title}
         </h2>
-        <p id="confirm-dialog-description" className="text-slate-300 mb-6">
+        <p id="confirm-dialog-description" className="text-brown-body mb-6">
           {message}
         </p>
         <div className="flex gap-3 justify-end">
@@ -77,14 +77,14 @@ export function ConfirmDialog({
             ref={cancelRef}
             type="button"
             onClick={onCancel}
-            className="px-4 py-2 rounded-lg bg-slate-700 hover:bg-slate-600 text-slate-100 font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-800"
+            className="px-4 py-2 rounded-sm bg-parchment-dark hover:bg-frame/20 border-2 border-frame text-brown-body font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-crimson focus:ring-offset-2 focus:ring-offset-parchment-light"
           >
             Cancel
           </button>
           <button
             type="button"
             onClick={onConfirm}
-            className={`px-4 py-2 rounded-lg font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-800 ${confirmClass}`}
+            className={`px-4 py-2 rounded-sm font-medium font-cinzel transition-colors focus:outline-none focus:ring-2 focus:ring-crimson focus:ring-offset-2 focus:ring-offset-parchment-light ${confirmClass}`}
           >
             {confirmLabel}
           </button>
