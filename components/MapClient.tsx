@@ -14,13 +14,7 @@ import MarkerClusterGroup from "react-leaflet-cluster";
 import type { LayerConfig, District } from "@/lib/types";
 import type { Marker as LeafletMarker } from "leaflet";
 import type { Note } from "@/lib/types";
-import {
-  getNotes,
-  saveNote,
-  updateNote,
-  deleteNote,
-  isStorageAvailable,
-} from "@/lib/storage";
+import { useNotes } from "@/lib/useNotes";
 import { NoteModal } from "./NoteModal";
 import { ConfirmDialog } from "./ConfirmDialog";
 
@@ -171,7 +165,7 @@ if (typeof window !== "undefined") {
 }
 
 export function MapClient({ activeLayer, targetDistrict = null, onMapClick, onResetZoom }: MapClientProps) {
-  const [notes, setNotes] = useState<Note[]>([]);
+  const { notes, saveNote, deleteNote } = useNotes(activeLayer.storageKey);
   const [bounds, setBounds] = useState<L.LatLngBoundsLiteral | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [modalLatLng, setModalLatLng] = useState<{
@@ -198,13 +192,7 @@ export function MapClient({ activeLayer, targetDistrict = null, onMapClick, onRe
     img.src = activeLayer.image;
   }, [activeLayer.image]);
 
-  // Load notes when layer changes
-  useEffect(() => {
-    setNotes(getNotes(activeLayer.storageKey));
-  }, [activeLayer.storageKey]);
-
   const handleMapClick = useCallback((lat: number, lng: number) => {
-    if (!isStorageAvailable()) return;
     setModalLatLng({ lat, lng });
     setModalExistingNote(null);
     setModalOpen(true);
@@ -218,10 +206,9 @@ export function MapClient({ activeLayer, targetDistrict = null, onMapClick, onRe
         createdAt: modalExistingNote?.createdAt ?? now,
         updatedAt: now,
       };
-      const updated = saveNote(activeLayer.storageKey, note);
-      setNotes(updated);
+      void saveNote(note);
     },
-    [activeLayer.storageKey, modalExistingNote]
+    [modalExistingNote, saveNote]
   );
 
   const handleNoteEdit = useCallback((note: Note) => {
@@ -237,12 +224,11 @@ export function MapClient({ activeLayer, targetDistrict = null, onMapClick, onRe
 
   const handleNoteDeleteConfirm = useCallback(() => {
     if (noteToDelete) {
-      const updated = deleteNote(activeLayer.storageKey, noteToDelete.id);
-      setNotes(updated);
+      void deleteNote(noteToDelete.id);
       setNoteToDelete(null);
     }
     setDeleteDialogOpen(false);
-  }, [activeLayer.storageKey, noteToDelete]);
+  }, [noteToDelete, deleteNote]);
 
   const handleDiscardConfirm = useCallback((confirm: () => void) => {
     setDiscardCallback(() => confirm);

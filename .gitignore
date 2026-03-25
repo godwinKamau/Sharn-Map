@@ -2,3 +2,6 @@ node_modules
 .cursor
 .next
 design.json
+.env
+.env.local
+package-lock.json
