@@ -4,12 +4,14 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "convex": "convex dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
     "postinstall": "mkdir -p public/maps && (cp Sharn_*.webp public/maps/ 2>/dev/null || true)"
   },
   "dependencies": {
+    "convex": "^1.34.0",
     "leaflet": "^1.9.4",
     "next": "^15.0.0",
     "react": "^19.0.0",
