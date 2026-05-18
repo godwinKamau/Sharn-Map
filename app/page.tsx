@@ -2,7 +2,7 @@
 
 import { useState, useCallback } from "react";
 import type { District } from "@/lib/types";
-import { LAYERS } from "@/config/layers";
+import { LAYERS, PLATEAUS_OVERLAY } from "@/config/layers";
 import { LayerTabs } from "@/components/LayerTabs";
 import { DistrictSearch } from "@/components/DistrictSearch";
 import { StorageWarning } from "@/components/StorageWarning";
@@ -11,6 +11,7 @@ import { MapWrapper } from "@/components/MapWrapper";
 export default function HomePage() {
   const [activeLayerId, setActiveLayerId] = useState(LAYERS[0]!.id);
   const [targetDistrict, setTargetDistrict] = useState<District | null>(null);
+  const [plateausOverlayEnabled, setPlateausOverlayEnabled] = useState(false);
 
   const handleLayerChange = useCallback((layerId: string) => {
     setActiveLayerId(layerId);
@@ -53,11 +54,38 @@ export default function HomePage() {
           </h1>
           <DistrictSearch onSelect={handleDistrictSelect} />
         </div>
-        <LayerTabs
-          layers={LAYERS}
-          activeLayerId={activeLayerId}
-          onLayerChange={handleLayerChange}
-        />
+        <div className="mt-3 flex flex-wrap items-center gap-2">
+          <LayerTabs
+            layers={LAYERS}
+            activeLayerId={activeLayerId}
+            onLayerChange={handleLayerChange}
+          />
+          <button
+            type="button"
+            aria-pressed={plateausOverlayEnabled}
+            onClick={() => setPlateausOverlayEnabled((enabled) => !enabled)}
+            className={`
+              rounded-lg px-4 py-2 text-sm font-medium transition-colors border
+              focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-parchment focus:ring-crimson
+              ${
+                plateausOverlayEnabled
+                  ? "border-crimson-dark text-white ring-2 ring-crimson/40"
+                  : "border-frame bg-transparent text-brown-muted hover:bg-parchment-dark/40 hover:text-brown-body"
+              }
+            `}
+            style={
+              plateausOverlayEnabled
+                ? {
+                    backgroundColor: "#7B1D1D",
+                    borderLeftWidth: "4px",
+                    borderLeftColor: PLATEAUS_OVERLAY.color,
+                  }
+                : undefined
+            }
+          >
+            {PLATEAUS_OVERLAY.name}
+          </button>
+        </div>
       </header>
       <div className="flex-1 min-h-0 relative">
         <MapWrapper
@@ -65,6 +93,8 @@ export default function HomePage() {
           targetDistrict={targetDistrict}
           onMapClick={handleMapClick}
           onResetZoom={handleMapClick}
+          overlayEnabled={plateausOverlayEnabled}
+          overlayImage={PLATEAUS_OVERLAY.image}
         />
         <button
           type="button"

@@ -23,6 +23,8 @@ interface MapClientProps {
   targetDistrict?: District | null;
   onMapClick?: () => void;
   onResetZoom?: () => void;
+  overlayImage?: string;
+  overlayEnabled?: boolean;
 }
 
 function MapClickHandler({
@@ -151,6 +153,70 @@ function ResetZoomControl({
   );
 }
 
+function NotesVisibilityToggle({
+  notesVisible,
+  onToggle,
+}: {
+  notesVisible: boolean;
+  onToggle: () => void;
+}) {
+  const controlRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = controlRef.current;
+    if (!el) return;
+    L.DomEvent.disableClickPropagation(el);
+    L.DomEvent.disableScrollPropagation(el);
+  }, []);
+
+  return (
+    <div ref={controlRef} className="absolute bottom-4 left-4 z-[1000]">
+      <button
+        type="button"
+        onClick={() => onToggle()}
+        aria-label={notesVisible ? "Hide notes" : "Show notes"}
+        aria-pressed={notesVisible}
+        className="font-sharn-ui w-12 h-12 rounded-full bg-parchment-light/95 hover:bg-crimson hover:text-white border-2 border-frame text-brown-body flex items-center justify-center shadow-parchment transition-colors focus:outline-none focus:ring-2 focus:ring-crimson focus:ring-offset-2 focus:ring-offset-parchment"
+      >
+        <svg
+          className="w-6 h-6"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+          aria-hidden
+        >
+          {notesVisible ? (
+            <>
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"
+              />
+              <circle cx="12" cy="12" r="3" />
+            </>
+          ) : (
+            <>
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"
+              />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M1 1l22 22"
+              />
+            </>
+          )}
+        </svg>
+      </button>
+    </div>
+  );
+}
+
 // Fix default marker icon in Next.js (webpack doesn't resolve leaflet's icon paths)
 if (typeof window !== "undefined") {
   const DefaultIcon = L.icon({
@@ -164,7 +230,14 @@ if (typeof window !== "undefined") {
   L.Marker.prototype.options.icon = DefaultIcon;
 }
 
-export function MapClient({ activeLayer, targetDistrict = null, onMapClick, onResetZoom }: MapClientProps) {
+export function MapClient({
+  activeLayer,
+  targetDistrict = null,
+  onMapClick,
+  onResetZoom,
+  overlayImage,
+  overlayEnabled = false,
+}: MapClientProps) {
   const { notes, saveNote, deleteNote } = useNotes(activeLayer.storageKey);
   const [bounds, setBounds] = useState<L.LatLngBoundsLiteral | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
@@ -179,6 +252,7 @@ export function MapClient({ activeLayer, targetDistrict = null, onMapClick, onRe
   );
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [noteToDelete, setNoteToDelete] = useState<Note | null>(null);
+  const [notesVisible, setNotesVisible] = useState(true);
 
   // Load image dimensions for bounds
   useEffect(() => {
@@ -273,6 +347,9 @@ export function MapClient({ activeLayer, targetDistrict = null, onMapClick, onRe
         scrollWheelZoom={true}
       >
         <ImageOverlay url={activeLayer.image} bounds={bounds} />
+        {overlayEnabled && overlayImage ? (
+          <ImageOverlay url={overlayImage} bounds={bounds} />
+        ) : null}
         {targetDistrict && targetDistrict.layerId === activeLayer.id && (
           <>
             <FlyToDistrict district={targetDistrict} activeLayerId={activeLayer.id} />
@@ -281,8 +358,12 @@ export function MapClient({ activeLayer, targetDistrict = null, onMapClick, onRe
         )}
         <MapClickHandler onNoteClick={handleMapClick} onMapClick={onMapClick} />
         <ResetZoomControl center={defaultCenter} zoom={0} onResetZoom={onResetZoom} />
+        <NotesVisibilityToggle
+          notesVisible={notesVisible}
+          onToggle={() => setNotesVisible((v) => !v)}
+        />
         <MarkerClusterGroup chunkedLoading>
-          {notes.map((note) => (
+          {notesVisible && notes.map((note) => (
             <Marker key={note.id} position={[note.lat, note.lng]}>
               <Popup>
                 <div className="min-w-[180px] p-1">

@@ -13,9 +13,18 @@ interface MapWrapperProps {
   targetDistrict?: District | null;
   onMapClick?: () => void;
   onResetZoom?: () => void;
+  overlayImage?: string;
+  overlayEnabled?: boolean;
 }
 
-export function MapWrapper({ activeLayer, targetDistrict = null, onMapClick, onResetZoom }: MapWrapperProps) {
+export function MapWrapper({
+  activeLayer,
+  targetDistrict = null,
+  onMapClick,
+  onResetZoom,
+  overlayImage,
+  overlayEnabled = false,
+}: MapWrapperProps) {
   return (
     <div className="h-full w-full">
       <MapClient
@@ -23,6 +32,8 @@ export function MapWrapper({ activeLayer, targetDistrict = null, onMapClick, onR
         targetDistrict={targetDistrict}
         onMapClick={onMapClick}
         onResetZoom={onResetZoom}
+        overlayImage={overlayImage}
+        overlayEnabled={overlayEnabled}
       />
     </div>
   );
