@@ -6,18 +6,20 @@ interface LayerTabsProps {
   layers: LayerConfig[];
   activeLayerId: string;
   onLayerChange: (layerId: string) => void;
+  className?: string;
 }
 
 export function LayerTabs({
   layers,
   activeLayerId,
   onLayerChange,
+  className = "",
 }: LayerTabsProps) {
   return (
     <div
       role="tablist"
       aria-label="Map layers"
-      className="mt-3 flex flex-wrap gap-2"
+      className={`flex flex-wrap gap-2 ${className}`}
     >
       {layers.map((layer) => {
         const isActive = layer.id === activeLayerId;

@@ -54,7 +54,7 @@ export default function HomePage() {
           </h1>
           <DistrictSearch onSelect={handleDistrictSelect} />
         </div>
-        <div className="mt-3 flex flex-wrap items-center gap-2">
+        <div className="mt-3 flex flex-wrap items-center gap-x-6 gap-y-2">
           <LayerTabs
             layers={LAYERS}
             activeLayerId={activeLayerId}
@@ -62,23 +62,25 @@ export default function HomePage() {
           />
           <button
             type="button"
+            aria-label="Toggle Sharn Plateaus overlay"
             aria-pressed={plateausOverlayEnabled}
             onClick={() => setPlateausOverlayEnabled((enabled) => !enabled)}
             className={`
               rounded-lg px-4 py-2 text-sm font-medium transition-colors border
-              focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-parchment focus:ring-crimson
+              focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-parchment
               ${
                 plateausOverlayEnabled
-                  ? "border-crimson-dark text-white ring-2 ring-crimson/40"
+                  ? "text-white ring-2 ring-blue-500/40"
                   : "border-frame bg-transparent text-brown-muted hover:bg-parchment-dark/40 hover:text-brown-body"
               }
             `}
             style={
               plateausOverlayEnabled
                 ? {
-                    backgroundColor: "#7B1D1D",
+                    backgroundColor: "#1E3A5F",
+                    borderColor: "#1E3A5F",
                     borderLeftWidth: "4px",
-                    borderLeftColor: PLATEAUS_OVERLAY.color,
+                    borderLeftColor: "#0EA5E9",
                   }
                 : undefined
             }
