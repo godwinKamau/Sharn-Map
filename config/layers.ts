@@ -27,3 +27,10 @@ export const LAYERS: LayerConfig[] = [
     storageKey: "sharn-notes-lower",
   },
 ];
+
+export const PLATEAUS_OVERLAY = {
+  id: "plateaus",
+  name: "Sharn Plateaus",
+  image: "/maps/Sharn_Plateaus.webp",
+  color: "#1E3A5F",
+} as const;
