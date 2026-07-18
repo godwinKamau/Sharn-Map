@@ -10,7 +10,7 @@ interface NoteModalProps {
   /** For create: lat/lng of the clicked point. For edit: ignored. */
   latLng: { lat: number; lng: number } | null;
   onSave: (note: Omit<Note, "createdAt" | "updatedAt">) => void;
-  onClose: () => void;
+  onClose: (reason?: "save" | "cancel") => void;
   onDiscardConfirm?: (confirm: () => void) => void;
 }
 
@@ -68,10 +68,10 @@ export function NoteModal({
 
     if (hasChanges && onDiscardConfirm) {
       onDiscardConfirm(() => {
-        onClose();
+        onClose("cancel");
       });
     } else {
-      onClose();
+      onClose("cancel");
     }
   }, [existingNote, title, body, onClose, onDiscardConfirm]);
 
@@ -109,7 +109,7 @@ export function NoteModal({
         lng: latLng.lng,
       });
     }
-    onClose();
+    onClose("save");
   };
 
   if (!open) return null;

@@ -1,6 +1,13 @@
 "use client";
 
-import { useEffect, useState, useCallback, useMemo, useRef } from "react";
+import {
+  useEffect,
+  useState,
+  useCallback,
+  useMemo,
+  useRef,
+  type MutableRefObject,
+} from "react";
 import L from "leaflet";
 import {
   MapContainer,
@@ -39,12 +46,35 @@ function MapClickHandler({
   onNoteClickRef.current = onNoteClick;
   onMapClickRef.current = onMapClick;
 
-  const handleClick = useCallback((e: L.LeafletMouseEvent) => {
+  const handleMapClick = useCallback(() => {
     onMapClickRef.current?.();
+  }, []);
+
+  const handleNoteClick = useCallback((e: L.LeafletMouseEvent) => {
     onNoteClickRef.current(e.latlng.lat, e.latlng.lng);
   }, []);
 
-  useMapEvent("click", handleClick);
+  useMapEvent("click", handleMapClick);
+  useMapEvent("dblclick", handleNoteClick);
+  return null;
+}
+
+function MapViewReset({
+  center,
+  zoom,
+  resetRef,
+}: {
+  center: [number, number];
+  zoom: number;
+  resetRef: MutableRefObject<(() => void) | null>;
+}) {
+  const map = useMap();
+  useEffect(() => {
+    resetRef.current = () => map.setView(center, zoom);
+    return () => {
+      resetRef.current = null;
+    };
+  }, [map, center, zoom, resetRef]);
   return null;
 }
 
@@ -253,6 +283,7 @@ export function MapClient({
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [noteToDelete, setNoteToDelete] = useState<Note | null>(null);
   const [notesVisible, setNotesVisible] = useState(true);
+  const resetMapViewRef = useRef<(() => void) | null>(null);
 
   // Load image dimensions for bounds
   useEffect(() => {
@@ -313,7 +344,6 @@ export function MapClient({
     discardCallback?.();
     setDiscardCallback(null);
     setDiscardDialogOpen(false);
-    setModalOpen(false);
   }, [discardCallback]);
 
   const defaultCenter: [number, number] = useMemo(() => {
@@ -323,6 +353,21 @@ export function MapClient({
     }
     return [500, 500];
   }, [bounds]);
+
+  const handleModalClose = useCallback(
+    (reason?: "save" | "cancel") => {
+      const isCreating = modalExistingNote === null;
+      setModalOpen(false);
+      setModalLatLng(null);
+      setModalExistingNote(null);
+
+      if (reason !== "save" && isCreating) {
+        resetMapViewRef.current?.();
+        onResetZoom?.();
+      }
+    },
+    [modalExistingNote, onResetZoom]
+  );
 
   if (!bounds) {
     return (
@@ -357,6 +402,11 @@ export function MapClient({
           </>
         )}
         <MapClickHandler onNoteClick={handleMapClick} onMapClick={onMapClick} />
+        <MapViewReset
+          center={defaultCenter}
+          zoom={0}
+          resetRef={resetMapViewRef}
+        />
         <ResetZoomControl center={defaultCenter} zoom={0} onResetZoom={onResetZoom} />
         <NotesVisibilityToggle
           notesVisible={notesVisible}
@@ -403,7 +453,7 @@ export function MapClient({
         existingNote={modalExistingNote}
         latLng={modalLatLng}
         onSave={handleNoteSave}
-        onClose={() => setModalOpen(false)}
+        onClose={handleModalClose}
         onDiscardConfirm={handleDiscardConfirm}
       />
 
