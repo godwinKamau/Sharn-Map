@@ -132,6 +132,15 @@ function DistrictWikiMarker({ district }: { district: District }) {
   );
 }
 
+const MAP_CONTROL_BUTTON_CLASS =
+  "font-sharn-ui w-12 h-12 rounded-full bg-parchment-light/95 hover:bg-crimson hover:text-white border-2 border-frame text-brown-body flex items-center justify-center shadow-parchment transition-colors focus:outline-none focus:ring-2 focus:ring-crimson focus:ring-offset-2 focus:ring-offset-parchment";
+
+const RESET_ZOOM_ICON = `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"/></svg>`;
+
+const NOTES_VISIBLE_ICON = `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>`;
+
+const NOTES_HIDDEN_ICON = `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1l22 22"/></svg>`;
+
 function ResetZoomControl({
   center,
   zoom,
@@ -142,45 +151,40 @@ function ResetZoomControl({
   onResetZoom?: () => void;
 }) {
   const map = useMap();
-  const controlRef = useRef<HTMLDivElement>(null);
+  const onResetZoomRef = useRef(onResetZoom);
+  onResetZoomRef.current = onResetZoom;
 
   useEffect(() => {
-    const el = controlRef.current;
-    if (!el) return;
-    L.DomEvent.disableClickPropagation(el);
-  }, []);
+    const control = new L.Control({ position: "bottomright" });
+    control.onAdd = () => {
+      const container = L.DomUtil.create(
+        "div",
+        "sharn-map-control sharn-map-control--right"
+      );
+      const button = L.DomUtil.create(
+        "button",
+        MAP_CONTROL_BUTTON_CLASS,
+        container
+      );
+      button.type = "button";
+      button.setAttribute("aria-label", "Reset zoom");
+      button.innerHTML = RESET_ZOOM_ICON;
+      L.DomEvent.disableClickPropagation(container);
+      L.DomEvent.disableScrollPropagation(container);
+      L.DomEvent.on(button, "click", (event) => {
+        L.DomEvent.stopPropagation(event);
+        map.setView(center, zoom);
+        onResetZoomRef.current?.();
+      });
+      return container;
+    };
+    control.addTo(map);
+    return () => {
+      control.remove();
+    };
+  }, [map, center, zoom]);
 
-  return (
-    <div
-      ref={controlRef}
-      className="absolute bottom-4 right-4 z-[1000]"
-    >
-      <button
-        type="button"
-        onClick={() => {
-          map.setView(center, zoom);
-          onResetZoom?.();
-        }}
-        aria-label="Reset zoom"
-        className="font-sharn-ui w-12 h-12 rounded-full bg-parchment-light/95 hover:bg-crimson hover:text-white border-2 border-frame text-brown-body flex items-center justify-center shadow-parchment transition-colors focus:outline-none focus:ring-2 focus:ring-crimson focus:ring-offset-2 focus:ring-offset-parchment"
-      >
-        <svg
-          className="w-6 h-6"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-          aria-hidden
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"
-          />
-        </svg>
-      </button>
-    </div>
-  );
+  return null;
 }
 
 function NotesVisibilityToggle({
@@ -190,61 +194,52 @@ function NotesVisibilityToggle({
   notesVisible: boolean;
   onToggle: () => void;
 }) {
-  const controlRef = useRef<HTMLDivElement>(null);
+  const map = useMap();
+  const onToggleRef = useRef(onToggle);
+  const buttonRef = useRef<HTMLButtonElement | null>(null);
+  onToggleRef.current = onToggle;
 
   useEffect(() => {
-    const el = controlRef.current;
-    if (!el) return;
-    L.DomEvent.disableClickPropagation(el);
-    L.DomEvent.disableScrollPropagation(el);
-  }, []);
+    const control = new L.Control({ position: "bottomleft" });
+    control.onAdd = () => {
+      const container = L.DomUtil.create(
+        "div",
+        "sharn-map-control sharn-map-control--left"
+      );
+      const button = L.DomUtil.create(
+        "button",
+        MAP_CONTROL_BUTTON_CLASS,
+        container
+      ) as HTMLButtonElement;
+      button.type = "button";
+      buttonRef.current = button;
+      L.DomEvent.disableClickPropagation(container);
+      L.DomEvent.disableScrollPropagation(container);
+      L.DomEvent.on(button, "click", (event) => {
+        L.DomEvent.stopPropagation(event);
+        onToggleRef.current();
+      });
+      return container;
+    };
+    control.addTo(map);
+    return () => {
+      buttonRef.current = null;
+      control.remove();
+    };
+  }, [map]);
 
-  return (
-    <div ref={controlRef} className="absolute bottom-4 left-4 z-[1000]">
-      <button
-        type="button"
-        onClick={() => onToggle()}
-        aria-label={notesVisible ? "Hide notes" : "Show notes"}
-        aria-pressed={notesVisible}
-        className="font-sharn-ui w-12 h-12 rounded-full bg-parchment-light/95 hover:bg-crimson hover:text-white border-2 border-frame text-brown-body flex items-center justify-center shadow-parchment transition-colors focus:outline-none focus:ring-2 focus:ring-crimson focus:ring-offset-2 focus:ring-offset-parchment"
-      >
-        <svg
-          className="w-6 h-6"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-          aria-hidden
-        >
-          {notesVisible ? (
-            <>
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"
-              />
-              <circle cx="12" cy="12" r="3" />
-            </>
-          ) : (
-            <>
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"
-              />
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M1 1l22 22"
-              />
-            </>
-          )}
-        </svg>
-      </button>
-    </div>
-  );
+  useEffect(() => {
+    const button = buttonRef.current;
+    if (!button) return;
+    button.setAttribute(
+      "aria-label",
+      notesVisible ? "Hide notes" : "Show notes"
+    );
+    button.setAttribute("aria-pressed", String(notesVisible));
+    button.innerHTML = notesVisible ? NOTES_VISIBLE_ICON : NOTES_HIDDEN_ICON;
+  }, [notesVisible]);
+
+  return null;
 }
 
 // Fix default marker icon in Next.js (webpack doesn't resolve leaflet's icon paths)

@@ -57,6 +57,22 @@ body {
 }
 
 /* Leaflet popups — parchment tone to match app */
+.leaflet-container {
+  z-index: 0;
+}
+
+.leaflet-container .sharn-map-control {
+  margin-bottom: 1rem;
+}
+
+.leaflet-container .sharn-map-control--left {
+  margin-left: 1rem;
+}
+
+.leaflet-container .sharn-map-control--right {
+  margin-right: 1rem;
+}
+
 .leaflet-popup-content-wrapper {
   background: #f0dfba !important;
   border: 2px solid #8b6340 !important;

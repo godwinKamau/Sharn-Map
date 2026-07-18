@@ -90,19 +90,21 @@ export default function HomePage() {
         </div>
       </header>
       <div className="flex-1 min-h-0 relative">
-        <MapWrapper
-          activeLayer={activeLayer}
-          targetDistrict={targetDistrict}
-          onMapClick={handleMapClick}
-          onResetZoom={handleMapClick}
-          overlayEnabled={plateausOverlayEnabled}
-          overlayImage={PLATEAUS_OVERLAY.image}
-        />
+        <div className="absolute inset-0 z-0">
+          <MapWrapper
+            activeLayer={activeLayer}
+            targetDistrict={targetDistrict}
+            onMapClick={handleMapClick}
+            onResetZoom={handleMapClick}
+            overlayEnabled={plateausOverlayEnabled}
+            overlayImage={PLATEAUS_OVERLAY.image}
+          />
+        </div>
         <button
           type="button"
           onClick={goPrev}
           aria-label="Previous map layer"
-          className="font-sharn-ui absolute left-4 top-1/2 -translate-y-1/2 z-10 w-12 h-12 rounded-full bg-parchment-light/95 hover:bg-crimson hover:text-white border-2 border-frame text-brown-body flex items-center justify-center shadow-parchment transition-colors focus:outline-none focus:ring-2 focus:ring-crimson focus:ring-offset-2 focus:ring-offset-parchment"
+          className="font-sharn-ui absolute left-4 top-1/2 -translate-y-1/2 z-[1100] w-12 h-12 rounded-full bg-parchment-light/95 hover:bg-crimson hover:text-white border-2 border-frame text-brown-body flex items-center justify-center shadow-parchment transition-colors focus:outline-none focus:ring-2 focus:ring-crimson focus:ring-offset-2 focus:ring-offset-parchment pointer-events-auto"
         >
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -112,7 +114,7 @@ export default function HomePage() {
           type="button"
           onClick={goNext}
           aria-label="Next map layer"
-          className="font-sharn-ui absolute right-4 top-1/2 -translate-y-1/2 z-10 w-12 h-12 rounded-full bg-parchment-light/95 hover:bg-crimson hover:text-white border-2 border-frame text-brown-body flex items-center justify-center shadow-parchment transition-colors focus:outline-none focus:ring-2 focus:ring-crimson focus:ring-offset-2 focus:ring-offset-parchment"
+          className="font-sharn-ui absolute right-4 top-1/2 -translate-y-1/2 z-[1100] w-12 h-12 rounded-full bg-parchment-light/95 hover:bg-crimson hover:text-white border-2 border-frame text-brown-body flex items-center justify-center shadow-parchment transition-colors focus:outline-none focus:ring-2 focus:ring-crimson focus:ring-offset-2 focus:ring-offset-parchment pointer-events-auto"
         >
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
