@@ -81,6 +81,10 @@ body {
   color: #4a2e14;
 }
 
+.sharn-note-popup .leaflet-popup-content-wrapper {
+  overflow: hidden;
+}
+
 .leaflet-popup-tip {
   background: #f0dfba !important;
   border: 2px solid #8b6340 !important;
@@ -90,6 +94,12 @@ body {
 .leaflet-popup-content {
   margin: 10px 12px !important;
   font-family: "EB Garamond", Garamond, serif;
+}
+
+.leaflet-popup-content.leaflet-popup-scrolled {
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
 }
 
 /* Marker cluster — warmer palette */

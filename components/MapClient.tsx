@@ -34,6 +34,64 @@ interface MapClientProps {
   overlayEnabled?: boolean;
 }
 
+const NOTE_POPUP_CLASS = "sharn-note-popup";
+const NOTE_POPUP_MIN_HEIGHT = 120;
+const NOTE_POPUP_MAX_HEIGHT = 320;
+/** Space reserved for tip, close button, and popup chrome when sizing. */
+const NOTE_POPUP_CHROME = 88;
+
+const NOTE_POPUP_OPTIONS = {
+  className: NOTE_POPUP_CLASS,
+  autoPan: true,
+  autoPanPadding: [16, 16] as L.PointExpression,
+  autoPanPaddingTopLeft: [56, 56] as L.PointExpression,
+  autoPanPaddingBottomRight: [72, 72] as L.PointExpression,
+  maxHeight: NOTE_POPUP_MAX_HEIGHT,
+};
+
+/** Size note popups to the visible map area; content scrolls when taller than maxHeight. */
+function NotePopupAutoFit() {
+  const map = useMap();
+  const isAdjustingRef = useRef(false);
+
+  useEffect(() => {
+    const handlePopupOpen = (event: L.PopupEvent) => {
+      if (isAdjustingRef.current) return;
+
+      const popup = event.popup;
+      if (!popup.options.className?.includes(NOTE_POPUP_CLASS)) {
+        return;
+      }
+
+      const latLng = popup.getLatLng();
+      if (!latLng) return;
+
+      const mapSize = map.getSize();
+      const anchor = map.latLngToContainerPoint(latLng);
+      const spaceAbove = anchor.y - NOTE_POPUP_CHROME;
+      const spaceBelow = mapSize.y - anchor.y - NOTE_POPUP_CHROME;
+      const available = Math.max(
+        NOTE_POPUP_MIN_HEIGHT,
+        Math.max(spaceAbove, spaceBelow)
+      );
+      const nextMaxHeight = Math.min(NOTE_POPUP_MAX_HEIGHT, available);
+      if (popup.options.maxHeight === nextMaxHeight) return;
+
+      isAdjustingRef.current = true;
+      popup.options.maxHeight = nextMaxHeight;
+      popup.update();
+      isAdjustingRef.current = false;
+    };
+
+    map.on("popupopen", handlePopupOpen);
+    return () => {
+      map.off("popupopen", handlePopupOpen);
+    };
+  }, [map]);
+
+  return null;
+}
+
 function MapClickHandler({
   onNoteClick,
   onMapClick,
@@ -402,6 +460,7 @@ export function MapClient({
           zoom={0}
           resetRef={resetMapViewRef}
         />
+        <NotePopupAutoFit />
         <ResetZoomControl center={defaultCenter} zoom={0} onResetZoom={onResetZoom} />
         <NotesVisibilityToggle
           notesVisible={notesVisible}
@@ -410,13 +469,13 @@ export function MapClient({
         <MarkerClusterGroup chunkedLoading>
           {notesVisible && notes.map((note) => (
             <Marker key={note.id} position={[note.lat, note.lng]}>
-              <Popup>
+              <Popup {...NOTE_POPUP_OPTIONS}>
                 <div className="min-w-[180px] p-1">
                   <h3 className="font-cinzel font-semibold text-brown-heading mb-1">
                     {note.title}
                   </h3>
                   {note.body ? (
-                    <p className="text-sm text-brown-body whitespace-pre-wrap mb-3">
+                    <p className="text-sm text-brown-body whitespace-pre-wrap mb-3 break-words">
                       {note.body}
                     </p>
                   ) : null}
